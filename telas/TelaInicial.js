@@ -2,6 +2,9 @@ import React, {useState} from 'react';
 import { View,Text, StyleSheet, Button, Platform, TextInput, TouchableWithoutFeedback, Image, Keyboard, Alert } from 'react-native';
 import * as bus from 'bus-promise';
 
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+
 console.disableYellowBox = true;
 
 const TelaInicial = (props) => {
@@ -17,8 +20,10 @@ const TelaInicial = (props) => {
             auth,
             type: 'lines',
             terms: texto
-          }).then((response) => {
-              props.navigation.navigate("Resultado" , {resultado: response})
+          }).then(async(response) => {
+                const local = await capturaLocalizacao();
+                console.log(local)
+                props.navigation.navigate("Resultado" , {resultado: response, localizacao: local})
           })
     }
 
@@ -31,8 +36,45 @@ const TelaInicial = (props) => {
             { text: "OK", onPress: () => console.log("OK Pressed")}
         ]);
         }
-
     }
+
+
+    const capturaLocalizacao = async() => {
+        const temPermissao = await verificarPermissoes();
+        if(temPermissao){
+          try{
+            const loc = await Location.getCurrentPositionAsync({timeout: 8000});
+            const localizacao = await({
+              lat: loc.coords.latitude,
+              lng: loc.coords.longitude
+            });
+
+            return localizacao;
+    
+          }catch(err){
+            Alert.alert(
+              "Impossivel obter localização",
+              "Tente novamente mais tarde",
+              [{text: "OK"}]
+            )
+          }
+        }
+    
+      }
+    
+    
+      const verificarPermissoes = async() => {
+        const resultado = await Permissions.askAsync(Permissions.LOCATION);
+        if(resultado.status !== "granted"){
+          Alert.alert(
+            'Sem Permissão para uso do mecanismo de localização',
+            "É preciso liberar acesso ao mecanismo de localização",
+            [{text: "OK"}]
+          )
+          return false;
+        }
+        return true;
+      }
     
   return (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>

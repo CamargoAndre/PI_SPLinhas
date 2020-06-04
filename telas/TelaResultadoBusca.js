@@ -13,7 +13,7 @@ const TelaResultadoBusca = (props) => {
 
   const [linhas, setLinhas]  = useState(props.navigation.getParam('resultado'))
   const [auth, setAuth] = useState(bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c'))
-
+  const [localizacao, setLocalizacao] = useState(props.navigation.getParam('localizacao'));
 
 
   const adicionarCordLinha = (shape, linha) => {
@@ -38,7 +38,8 @@ const TelaResultadoBusca = (props) => {
     }).then((response) => {
       
       onibusPosicao = response
-      props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, posicaoBus: onibusPosicao})
+      props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, 
+                                          posicaoBus: onibusPosicao, posPessoa: localizacao})
     })
 
           

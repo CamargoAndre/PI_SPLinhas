@@ -14,6 +14,10 @@ const TelaMapa = (props) => {
   const[primeiro, setPrimeiro] = useState(props.navigation.getParam('posInical'))
   const[ultimo, setUltimo] = useState(props.navigation.getParam('posFinal'))
   const [posicoes, setPosicoes] = useState(props.navigation.getParam('posicaoBus'))
+  const [posicaoPessoa, setPosicaoPessoa] = useState(props.navigation.getParam('posPessoa'))
+
+  console.log(posicaoPessoa.lat)
+  console.log(posicaoPessoa.lng)
 
 
   let latitude = (parseFloat(ultimo.latitude) + parseFloat(primeiro.latitude)) / 2;
@@ -21,7 +25,9 @@ const TelaMapa = (props) => {
 
   let position = <Marker coordinate={{latitude: 0, longitude: 0}}/>
 
+
   console.log(posicoes.vehicles)
+
   
   if(posicoes.vehicles === null){
     Alert.alert(
@@ -91,6 +97,14 @@ const TelaMapa = (props) => {
           </MapView.Marker> 
 
           {position}
+
+          <MapView.Marker
+              coordinate={{latitude: posicaoPessoa.lat , longitude: posicaoPessoa.lng}}
+            > 
+              <Image 
+                style={estilos.imagem}
+                source={require('../assets/mapas-e-localizacao.png')}/>
+          </MapView.Marker>
           
           <Polyline
             coordinates={linhaMap}
